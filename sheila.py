@@ -2,7 +2,7 @@ from discord.ext import commands
 import discord
 from weather import Weatherday, Weatherdays
 from current import Current
-from settings import TOKEN, WEATHER_URL
+from settings import TOKEN, WEATHER_URL, IMAGE_STORE_URL
 import requests
 
 bot = commands.Bot(command_prefix="sheila ")
@@ -32,12 +32,16 @@ async def week(ctx):
 @bot.command()
 async def current(ctx):
     reference = Current(WEATHER_URL)
+
     current_embed = discord.Embed(
         title="Current Weather",
         description=f"Last Updated {reference.date}",
         color=0xDBE6FF,
     )
-    current_embed.set_thumbnail(url=reference.image)
+
+    image_number = reference.image.strip("https://weather.gc.ca/weathericons/").strip(".gif")
+
+    current_embed.set_thumbnail(url="{}{}.jpg".format(IMAGE_STORE_URL, image_number))
 
     current_embed.add_field(
         name="Temperature", value=reference.temperature, inline=True

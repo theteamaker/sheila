@@ -6,3 +6,4 @@ import os
 
 TOKEN = os.getenv("TOKEN")
 WEATHER_URL = os.getenv("WEATHER_URL")
+IMAGE_STORE_URL = os.getenv("IMAGE_STORE_URL")
