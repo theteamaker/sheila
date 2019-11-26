@@ -13,7 +13,13 @@ async def week(ctx):
     reference = Weatherdays(WEATHER_URL)
 
     weekly_embed = discord.Embed(
-        title="Weather Report", description=f"Last Updated {Current(WEATHER_URL).date}", color=0xDBE6FF
+        title="Weather Report",
+        description=f"Last Updated {Current(WEATHER_URL).date}",
+        color=0xDBE6FF,
+    )
+
+    weekly_embed.set_author(
+        name="Provided by Environment Canada", url="https://weather.gc.ca/"
     )
 
     for day in reference.days:
@@ -27,11 +33,15 @@ async def week(ctx):
 async def current(ctx):
     reference = Current(WEATHER_URL)
     current_embed = discord.Embed(
-        title="Current Weather", description=f"Last Updated {reference.date}", color=0xDBE6FF
+        title="Current Weather",
+        description=f"Last Updated {reference.date}",
+        color=0xDBE6FF,
     )
     current_embed.set_thumbnail(url=reference.image)
 
-    current_embed.add_field(name="Temperature", value=reference.temperature, inline=True)
+    current_embed.add_field(
+        name="Temperature", value=reference.temperature, inline=True
+    )
     current_embed.add_field(name="Condition", value=reference.condition, inline=True)
     current_embed.add_field(name="Tendency", value=reference.tendency, inline=True)
     current_embed.add_field(name="Wind", value=reference.wind, inline=True)
@@ -39,7 +49,9 @@ async def current(ctx):
     current_embed.add_field(name="Visibility", value=reference.visibility, inline=True)
     current_embed.add_field(name="Humidity", value=reference.humidity, inline=True)
     current_embed.add_field(name="Pressure", value=reference.pressure, inline=True)
-
+    current_embed.set_author(
+        name="Provided by Environment Canada", url="https://weather.gc.ca/"
+    )
     await ctx.send(embed=current_embed)
 
 

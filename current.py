@@ -2,17 +2,16 @@ import requests
 from bs4 import BeautifulSoup as bs
 from settings import WEATHER_URL
 
+
 class Current:
     def __init__(self, url):
         page = requests.get(url)
         soup = bs(page.content, "html.parser")
 
         # date
-        self.date = soup.select(
-            "dl.mrgn-bttm-0 > dd:nth-child(4)"
-            )[0].text
+        self.date = soup.select("dl.mrgn-bttm-0 > dd:nth-child(4)")[0].text
 
-        #condition
+        # condition
         self.condition = soup.select(
             "div.col-sm-4:nth-child(1) > dl:nth-child(1) > dd:nth-child(2)"
         )[0].text
@@ -53,6 +52,9 @@ class Current:
         )[0].text
 
         # get image contents
-        self.image = "https://weather.gc.ca" + soup.select(
-            "details.hidden-xs > div:nth-child(3) > div:nth-child(1) > img:nth-child(1)"
-        )[0]["src"]
+        self.image = (
+            "https://weather.gc.ca"
+            + soup.select(
+                "details.hidden-xs > div:nth-child(3) > div:nth-child(1) > img:nth-child(1)"
+            )[0]["src"]
+        )

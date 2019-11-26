@@ -81,9 +81,9 @@ class Weatherday:
                     date_dict["day"] = to_add
                     break
                 else:
-                    to_add = day[0] + 'th'
+                    to_add = day[0] + "th"
                     date_dict["day"] = to_add
-    
+
             for weekday in weekday_replacements.items():
                 if unformatted_date[0] == weekday[0]:
                     date_dict["weekday"] = weekday[1]
