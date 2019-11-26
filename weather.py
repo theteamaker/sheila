@@ -2,23 +2,23 @@ import requests
 from bs4 import BeautifulSoup as bs
 from settings import WEATHER_URL
 
-URL = WEATHER_URL
 
-page = requests.get(URL)
+class Weatherdays:
+    def __init__(self, url):
+        page = requests.get(url)
+        soup = bs(page.content, "html.parser")
 
-soup = bs(page.content, "html.parser")
+        table = soup.table
+        table_rows = table.find_all("tr")
 
-table = soup.table
-table_rows = table.find_all("tr")
+        self.days = []
 
-days = []
-
-for tr in table_rows:
-    td = tr.find_all("td")
-    row = [i.text for i in td]
-    if len(row) != 0:
-        if row[0] != " Night":
-            days.append(row)
+        for tr in table_rows:
+            td = tr.find_all("td")
+            row = [i.text for i in td]
+            if len(row) != 0:
+                if row[0] != " Night":
+                    self.days.append(row)
 
 
 class Weatherday:
@@ -54,13 +54,6 @@ class Weatherday:
                 "1": "st",
                 "2": "nd",
                 "3": "rd",
-                "4": "th",
-                "5": "th",
-                "6": "th",
-                "7": "th",
-                "8": "th",
-                "9": "th",
-                "0": "th",
             }
 
             weekday_replacements = {
@@ -87,7 +80,10 @@ class Weatherday:
                     to_add = day[0] + num[1]
                     date_dict["day"] = to_add
                     break
-
+                else:
+                    to_add = day[0] + 'th'
+                    date_dict["day"] = to_add
+    
             for weekday in weekday_replacements.items():
                 if unformatted_date[0] == weekday[0]:
                     date_dict["weekday"] = weekday[1]

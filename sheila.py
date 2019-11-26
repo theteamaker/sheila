@@ -1,30 +1,22 @@
 from discord.ext import commands
 import discord
-from weather import days, Weatherday
-from current import (
-    date,
-    img,
-    condition,
-    pressure,
-    tendency,
-    temperature,
-    dew,
-    humidity,
-    wind,
-    visibility,
-)
-from settings import TOKEN
+from weather import Weatherday, Weatherdays
+from current import Current
+from settings import TOKEN, WEATHER_URL
+import requests
 
 bot = commands.Bot(command_prefix="sheila ")
 
 
 @bot.command()
 async def week(ctx):
+    reference = Weatherdays(WEATHER_URL)
+
     weekly_embed = discord.Embed(
-        title="Weather Report", description=f"Last Updated {date}", color=0xDBE6FF
+        title="Weather Report", description=f"Last Updated {Current(WEATHER_URL).date}", color=0xDBE6FF
     )
 
-    for day in days:
+    for day in reference.days:
         report = Weatherday(day)
         weekly_embed.add_field(name=report.date(), value=report.info, inline=False)
 
@@ -33,19 +25,20 @@ async def week(ctx):
 
 @bot.command()
 async def current(ctx):
+    reference = Current(WEATHER_URL)
     current_embed = discord.Embed(
-        title="Current Weather", description=f"Last Updated {date}", color=0xDBE6FF
+        title="Current Weather", description=f"Last Updated {reference.date}", color=0xDBE6FF
     )
-    current_embed.set_thumbnail(url=img)
+    current_embed.set_thumbnail(url=reference.image)
 
-    current_embed.add_field(name="Temperature", value=temperature, inline=True)
-    current_embed.add_field(name="Condition", value=condition, inline=True)
-    current_embed.add_field(name="Tendency", value=tendency, inline=True)
-    current_embed.add_field(name="Wind", value=wind, inline=True)
-    current_embed.add_field(name="Dew", value=dew, inline=True)
-    current_embed.add_field(name="Visibility", value=visibility, inline=True)
-    current_embed.add_field(name="Humidity", value=humidity, inline=True)
-    current_embed.add_field(name="Pressure", value=pressure, inline=True)
+    current_embed.add_field(name="Temperature", value=reference.temperature, inline=True)
+    current_embed.add_field(name="Condition", value=reference.condition, inline=True)
+    current_embed.add_field(name="Tendency", value=reference.tendency, inline=True)
+    current_embed.add_field(name="Wind", value=reference.wind, inline=True)
+    current_embed.add_field(name="Dew", value=reference.dew, inline=True)
+    current_embed.add_field(name="Visibility", value=reference.visibility, inline=True)
+    current_embed.add_field(name="Humidity", value=reference.humidity, inline=True)
+    current_embed.add_field(name="Pressure", value=reference.pressure, inline=True)
 
     await ctx.send(embed=current_embed)
 
