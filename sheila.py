@@ -14,12 +14,15 @@ async def week(ctx):
 
     weekly_embed = discord.Embed(
         title="Weather Report",
-        description=f"Last Updated {Current(WEATHER_URL).date}",
-        color=0xDBE6FF,
+        color=0xDBE6FF
     )
 
     weekly_embed.set_author(
         name="Provided by Environment Canada", url="https://weather.gc.ca/"
+    )
+
+    weekly_embed.set_footer(
+        text=f"Last updated {Current(WEATHER_URL).date}"
     )
 
     for day in reference.days:
@@ -35,14 +38,17 @@ async def current(ctx):
 
     current_embed = discord.Embed(
         title="Current Weather",
-        description=f"Last Updated {reference.date}",
-        color=0xDBE6FF,
+        color=0xDBE6FF
     )
 
     image_number = reference.image.strip("https://weather.gc.ca/weathericons/").strip(".gif")
 
     current_embed.set_thumbnail(url="{}{}.jpg".format(IMAGE_STORE_URL, image_number))
 
+    current_embed.set_footer(
+        text=f"Last updated {reference.date}"
+    )
+    
     current_embed.add_field(
         name="Temperature", value=reference.temperature, inline=True
     )
