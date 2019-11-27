@@ -1,7 +1,6 @@
 from discord.ext import commands
 import discord
-from weather import Weatherday, Weatherdays
-from current import Current
+from weather import Weatherday, Weatherdays, Current
 from settings import TOKEN, WEATHER_URL, IMAGE_STORE_URL
 import requests
 
