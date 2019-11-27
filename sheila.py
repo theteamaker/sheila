@@ -72,14 +72,16 @@ async def current(ctx):
         inline=True
     )
 
-    current_embed.add_field(name="Tendency", 
-    value=reference.tendency, 
-    inline=True
+    current_embed.add_field(
+        name="Tendency", 
+        value=reference.tendency, 
+        inline=True
     )
 
-    current_embed.add_field(name="Wind", 
-    value=reference.wind, 
-    inline=True
+    current_embed.add_field(
+        name="Wind", 
+        value=reference.wind, 
+        inline=True
     )
 
     current_embed.add_field(
@@ -88,14 +90,16 @@ async def current(ctx):
         inline=True
     )
 
-    current_embed.add_field(name="Visibility", 
-    value=reference.visibility, 
-    inline=True
+    current_embed.add_field(
+        name="Visibility", 
+        value=reference.visibility, 
+        inline=True
     )
 
-    current_embed.add_field(name="Humidity", 
-    value=reference.humidity, 
-    inline=True
+    current_embed.add_field(
+        name="Humidity", 
+        value=reference.humidity, 
+        inline=True
     )
 
     current_embed.add_field(
@@ -109,7 +113,9 @@ async def current(ctx):
         url="https://weather.gc.ca/"
     )
 
-    await ctx.send(embed=current_embed)
+    await ctx.send(
+        embed=current_embed
+    )
 
 
 @bot.event
