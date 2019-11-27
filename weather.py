@@ -106,13 +106,16 @@ class Current:
         # date
         self.date = soup.select("dl.mrgn-bttm-0 > dd:nth-child(4)")[0].text
 
-        # get image contents
-        self.image = (
-            "https://weather.gc.ca"
-            + soup.select(
-                "details.hidden-xs > div:nth-child(3) > div:nth-child(1) > img:nth-child(1)"
-            )[0]["src"]
-        )
+        try:
+            # get image contents
+            self.image = (
+                "https://weather.gc.ca"
+                + soup.select(
+                    "details.hidden-xs > div:nth-child(3) > div:nth-child(1) > img:nth-child(1)"
+                )[0]["src"]
+            )
+        except:
+            self.image = ("")
 
         # table of data
         self.data = dataer(url)
