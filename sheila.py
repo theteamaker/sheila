@@ -15,20 +15,25 @@ db = dataset.connect(SQL_DATABASE)
 bot = commands.Bot(command_prefix="sheila ")
 get_search_data()  # at startup, get the search data
 
-table = db['servers']
+table = db["servers"]
+
 
 @bot.command()
 async def week(ctx, *, arg=""):
-    default = table.find_one(server=str(ctx.guild.id))['default']
+    try:
+        default = table.find_one(server=str(ctx.guild.id))["default"]
+    except:
+        await ctx.send("The default location for this server hasn't been set yet! Use `sheila set <provincial code> <city>` to do so.")
+        return
     
     if arg == "":
         constructed_argument = argument_constructor(default)
     else:
         constructed_argument = argument_constructor(arg)
-    
+
     if constructed_argument == 404:  # returning an error for things not found
         msg = await ctx.send(
-            "Something went wrong. try `sheila info current` for help with this command."
+            "Something went wrong. try `sheila info week` for help with this command."
         )
         time.sleep(4)
         await msg.delete()
@@ -39,7 +44,9 @@ async def week(ctx, *, arg=""):
 
     reference = Weatherdays(url)
 
-    weekly_embed = discord.Embed(title=f"Weather Report for {province_name}", color=0xDBE6FF)
+    weekly_embed = discord.Embed(
+        title=f"Weather Report for {province_name}", color=0xDBE6FF
+    )
 
     weekly_embed.set_author(
         name="Provided by Environment Canada", url="https://weather.gc.ca/"
@@ -56,7 +63,11 @@ async def week(ctx, *, arg=""):
 
 @bot.command()
 async def current(ctx, *, arg=""):
-    default = table.find_one(server=str(ctx.guild.id))['default']
+    try:
+        default = table.find_one(server=str(ctx.guild.id))["default"]
+    except:
+        await ctx.send("The default location for this server hasn't been set yet! Use `sheila set <provincial code> <city>` to do so.")
+        return
 
     if arg == "":
         constructed_argument = argument_constructor(default)
@@ -120,6 +131,7 @@ async def searchrefresh(ctx):
         time.sleep(4)
         await msg.delete()
 
+
 @bot.command()
 async def info(ctx, arg=""):
     if arg == "":
@@ -134,11 +146,12 @@ async def info(ctx, arg=""):
         if arg == argument[0]:
             await ctx.send(embed=argument[1])
 
+
 @bot.command(name="cities")
 async def cities_cmd(ctx, *, arg=""):
     if arg == "":
         return
-    
+
     if arg.lower() in [province[1]["ID"].lower() for province in provinces.items()]:
         cities_list = []
 
@@ -148,28 +161,23 @@ async def cities_cmd(ctx, *, arg=""):
         embeds = np.array_split(np.array(cities_list), 3)
 
         cities_embed = discord.Embed(
-            title="Cities in {}".format(arg.upper()), 
-            color=0xDBE6FF
+            title="Cities in {}".format(arg.upper()), color=0xDBE6FF
         )
-
 
         for embed in embeds:
             text = ""
             for city in embed:
                 text += "{}\n".format(city)
-            cities_embed.add_field(
-                name='Cities',
-                value=text,
-                inline=True
-            )
+            cities_embed.add_field(name="Cities", value=text, inline=True)
 
         cities_embed.set_author(
-        name="Provided by Environment Canada", url="https://weather.gc.ca/"
+            name="Provided by Environment Canada", url="https://weather.gc.ca/"
         )
 
         await ctx.send(embed=cities_embed)
     else:
         await ctx.send("Country code not found in database.")
+
 
 @bot.command(name="set")
 async def setdefault(ctx, *, arg=""):
@@ -182,20 +190,22 @@ async def setdefault(ctx, *, arg=""):
     if argument_constructor(default) == 404:
         await ctx.send("Invalid argument received - default couldn't be set.")
         return
-    
+
     table_entry = table.find_one(server=str(server_id))
-    
+
     if table_entry == None:
         table.insert(dict(server=str(server_id), default=arg))
         await ctx.send("**Success!** Default location has been stored.")
         return
     else:
-        table.update(dict(server=str(server_id), default=arg), ['server'])
+        table.update(dict(server=str(server_id), default=arg), ["server"])
         await ctx.send("**Success!** Default location has been updated.")
         return
-    
+
+
 @bot.event
 async def on_ready():
     print(f"Bot ready and logged in as {bot.user}.")
+
 
 bot.run(TOKEN)
