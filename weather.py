@@ -115,7 +115,7 @@ class Current:
                 )[0]["src"]
             )
         except:
-            self.image = ("")
+            self.image = ""
 
         # table of data
         self.data = dataer(url)

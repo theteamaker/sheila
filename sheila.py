@@ -1,15 +1,15 @@
-from discord.ext import commands
-import discord
-from weather import Weatherday, Weatherdays, Current
-from settings import TOKEN, WEATHER_URL, IMAGE_STORE_URL, SQL_DATABASE
-import requests
-from argument_constructor import argument_constructor
-from search import get_search_data, refresh, cities, provinces
-import time
-from help_embeds import help_current, help_week, help_embed
-from titlecase import titlecase
 import numpy as np
 import dataset
+import time
+import requests
+import discord
+from discord.ext import commands
+from weather import Weatherday, Weatherdays, Current
+from settings import TOKEN, WEATHER_URL, IMAGE_STORE_URL, SQL_DATABASE
+from argument_constructor import argument_constructor
+from search import get_search_data, refresh, cities, provinces
+from help_embeds import help_current, help_week, help_embed
+from titlecase import titlecase
 
 db = dataset.connect(SQL_DATABASE)
 bot = commands.Bot(command_prefix="sheila ")
@@ -21,11 +21,13 @@ table = db["servers"]
 @bot.command()
 async def week(ctx, *, arg=""):
     try:
-        default = table.find_one(server=str(ctx.guild.id))["default"]
+        default = table.find_one(server=str(ctx.guild.id))["default"] #doing the check for default location
     except:
-        await ctx.send("The default location for this server hasn't been set yet! Use `sheila set <provincial code> <city>` to do so.")
+        await ctx.send(
+            "The default location for this server hasn't been set yet! Use `sheila set <provincial code> <city>` to do so."
+        )
         return
-    
+
     if arg == "":
         constructed_argument = argument_constructor(default)
     else:
@@ -64,9 +66,11 @@ async def week(ctx, *, arg=""):
 @bot.command()
 async def current(ctx, *, arg=""):
     try:
-        default = table.find_one(server=str(ctx.guild.id))["default"]
+        default = table.find_one(server=str(ctx.guild.id))["default"] #doing the check for default location
     except:
-        await ctx.send("The default location for this server hasn't been set yet! Use `sheila set <provincial code> <city>` to do so.")
+        await ctx.send(
+            "The default location for this server hasn't been set yet! Use `sheila set <provincial code> <city>` to do so."
+        )
         return
 
     if arg == "":
