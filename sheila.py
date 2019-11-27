@@ -30,7 +30,11 @@ async def week(ctx):
 async def current(ctx):
     reference = Current(WEATHER_URL)
 
-    current_embed = discord.Embed(title="Current Weather", color=0xDBE6FF)
+    today_text = Weatherday(Weatherdays(WEATHER_URL).days[0]).info
+
+    current_embed = discord.Embed(
+        title="Current Weather", description=today_text, color=0xDBE6FF
+    )
 
     image_number = reference.image.strip("https://weather.gc.ca/weathericons/").strip(
         ".gif"
