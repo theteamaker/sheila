@@ -17,15 +17,30 @@ get_search_data()  # at startup, get the search data
 
 table = db["servers"]
 
+# some default messages to send
+default_messages = {
+    # General responses
+    "not_set": "The default location for this server hasn't been set yet! Use `sheila set <provincial code> <city>` to do so.",
+    "went_wrong": "Something went wrong. try `sheila info` for help with this command.",
+    # Database responses
+    "success_set_db": "**Success!** Default location has been set.",
+    "success_upd_db": "**Success!** Default location has been updated.",
+    "invalid_arg_db": "Invalid argument received - default couldn't be set.",
+    "country_code": "Country code not found in database.",
+    # Refresh-specific responses
+    "success_refresh": "The list of cities/provinces to index has been refreshed. (Keep in mind: you usually shouldn't ever need to use this.)",
+    "failed_refresh": "For unknown reasons, the refresh has failed. Please report the issue at Sheila's GitHub page.",
+}
+
 
 @bot.command()
 async def week(ctx, *, arg=""):
     try:
-        default = table.find_one(server=str(ctx.guild.id))["default"] #doing the check for default location
+        default = table.find_one(server=str(ctx.guild.id))[
+            "default"
+        ]  # doing the check for default location
     except:
-        await ctx.send(
-            "The default location for this server hasn't been set yet! Use `sheila set <provincial code> <city>` to do so."
-        )
+        await ctx.send(default_messages["not_set"])
         return
 
     if arg == "":
@@ -34,9 +49,7 @@ async def week(ctx, *, arg=""):
         constructed_argument = argument_constructor(arg)
 
     if constructed_argument == 404:  # returning an error for things not found
-        msg = await ctx.send(
-            "Something went wrong. try `sheila info week` for help with this command."
-        )
+        msg = await ctx.send(default_messages["went_wrong"])
         time.sleep(4)
         await msg.delete()
         return
@@ -66,11 +79,11 @@ async def week(ctx, *, arg=""):
 @bot.command()
 async def current(ctx, *, arg=""):
     try:
-        default = table.find_one(server=str(ctx.guild.id))["default"] #doing the check for default location
+        default = table.find_one(server=str(ctx.guild.id))[
+            "default"
+        ]  # doing the check for default location
     except:
-        await ctx.send(
-            "The default location for this server hasn't been set yet! Use `sheila set <provincial code> <city>` to do so."
-        )
+        await ctx.send(default_messages["not_set"])
         return
 
     if arg == "":
@@ -79,9 +92,7 @@ async def current(ctx, *, arg=""):
         constructed_argument = argument_constructor(arg)
 
     if constructed_argument == 404:  # returning an error for things not found
-        msg = await ctx.send(
-            "Something went wrong. try `sheila info current` for help with this command."
-        )
+        msg = await ctx.send(default_messages["went_wrong"])
         time.sleep(4)
         await msg.delete()
         return
@@ -123,15 +134,11 @@ async def current(ctx, *, arg=""):
 async def searchrefresh(ctx):
     try:
         refresh()
-        msg = await ctx.send(
-            "The list of cities/provinces to index has been refreshed. (Keep in mind: you usually shouldn't ever need to use this.)"
-        )
+        msg = await ctx.send(default_messages["success_refresh"])
         time.sleep(4)
         await msg.delete()
     except:
-        msg = await ctx.send(
-            "For unknown reasons, the refresh has failed. Please report the issue at Sheila's GitHub page."
-        )
+        msg = await ctx.send(default_messages["failed_refresh"])
         time.sleep(4)
         await msg.delete()
 
@@ -180,7 +187,7 @@ async def cities_cmd(ctx, *, arg=""):
 
         await ctx.send(embed=cities_embed)
     else:
-        await ctx.send("Country code not found in database.")
+        await ctx.send(default_messages["country_code"])
 
 
 @bot.command(name="set")
@@ -192,18 +199,18 @@ async def setdefault(ctx, *, arg=""):
     default = arg
 
     if argument_constructor(default) == 404:
-        await ctx.send("Invalid argument received - default couldn't be set.")
+        await ctx.send(default_messages["invalid_arg_db"])
         return
 
     table_entry = table.find_one(server=str(server_id))
 
     if table_entry == None:
         table.insert(dict(server=str(server_id), default=arg))
-        await ctx.send("**Success!** Default location has been stored.")
+        await ctx.send(default_messages["success_set_db"])
         return
     else:
         table.update(dict(server=str(server_id), default=arg), ["server"])
-        await ctx.send("**Success!** Default location has been updated.")
+        await ctx.send(default_messages["success_upd_db"])
         return
 
 
