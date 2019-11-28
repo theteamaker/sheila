@@ -1,4 +1,4 @@
-import numpy as np
+from itertools import islice
 import dataset
 import time
 import requests
@@ -158,6 +158,11 @@ async def info(ctx, arg=""):
             await ctx.send(embed=argument[1])
 
 
+def chunk(it, size):
+    it = iter(it)
+    return iter(lambda: tuple(islice(it, size)), ())
+
+
 @bot.command(name="cities")
 async def cities_cmd(ctx, *, arg=""):
     if arg == "":
@@ -169,7 +174,7 @@ async def cities_cmd(ctx, *, arg=""):
         for city in cities[arg.upper()]:
             cities_list.append(titlecase(city))
 
-        embeds = np.array_split(np.array(cities_list), 3)
+        embeds = chunk(cities_list, 3)
 
         cities_embed = discord.Embed(
             title="Cities in {}".format(arg.upper()), color=0xDBE6FF

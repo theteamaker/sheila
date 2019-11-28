@@ -4,3 +4,5 @@ defaults.db
 finder.py
 icons/
 images/
+venv/
+.vscode/
