@@ -10,6 +10,7 @@ from argument_constructor import argument_constructor
 from search import get_search_data, refresh, cities, provinces
 from help_embeds import help_current, help_week, help_embed
 from titlecase import titlecase
+from sublistify import sublistify
 
 db = dataset.connect(SQL_DATABASE)
 bot = commands.Bot(command_prefix="sheila ")
@@ -157,12 +158,6 @@ async def info(ctx, arg=""):
         if arg == argument[0]:
             await ctx.send(embed=argument[1])
 
-
-def chunk(it, size):
-    it = iter(it)
-    return iter(lambda: tuple(islice(it, size)), ())
-
-
 @bot.command(name="cities")
 async def cities_cmd(ctx, *, arg=""):
     if arg == "":
@@ -174,7 +169,7 @@ async def cities_cmd(ctx, *, arg=""):
         for city in cities[arg.upper()]:
             cities_list.append(titlecase(city))
 
-        embeds = chunk(cities_list, 3)
+        embeds = sublistify(cities_list, 3)
 
         cities_embed = discord.Embed(
             title="Cities in {}".format(arg.upper()), color=0xDBE6FF
