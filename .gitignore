@@ -1,2 +1,6 @@
 __pycache__
 .env
+defaults.db
+finder.py
+icons/
+images/
