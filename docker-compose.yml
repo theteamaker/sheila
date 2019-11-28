@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  sheila:
+    image: sheila
+    environment:
+      - TOKEN=<SECRET>
+      - WEATHER_URL=https://weather.gc.ca/city/pages/nl-24_metric_e.html
+      - IMAGE_STORE_URL=https://tickerbee.com/icons/
+      - SQL_DATABASE=sqlite:///data/defaults.db
+    volumes:
+      - sheila_data:/app/data
+
+volumes:
+  sheila_data:
+    external: true
