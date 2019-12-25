@@ -103,7 +103,7 @@ async def current(ctx, *, arg=""):
 
     reference = Current(url)
 
-    today_text = Weatherday(Weatherdays(WEATHER_URL).days[0]).info
+    today_text = Weatherday(Weatherdays(url).days[0]).info
 
     current_embed = discord.Embed(
         title=f"Current Weather in {province_name}",
