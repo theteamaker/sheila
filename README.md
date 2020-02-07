@@ -4,5 +4,5 @@ Sheila was designed to be able to tell the weather using Environment Canada's we
 
 ```bash
 pip install -r requirements.txt
-python shelia.py
+python sheila.py
 ```
